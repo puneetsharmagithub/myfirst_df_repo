@@ -1,0 +1,26 @@
+{
+	"name": "resurce_lookup",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_ablob_source1989",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "lookup.txt",
+				"container": "sourcefolder"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"type": "String"
+			}
+		]
+	}
+}
