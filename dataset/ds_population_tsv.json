@@ -1,0 +1,31 @@
+{
+	"name": "ds_population_tsv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_destination",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"output_filename": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().output_filename",
+					"type": "Expression"
+				},
+				"fileSystem": "output"
+			},
+			"columnDelimiter": "\t",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
