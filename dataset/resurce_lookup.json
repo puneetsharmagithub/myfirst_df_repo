@@ -13,7 +13,7 @@
 				"fileName": "lookup.txt",
 				"container": "sourcefolder"
 			},
-			"columnDelimiter": ",",
+			"columnDelimiter": "|",
 			"escapeChar": "\\",
 			"quoteChar": "\""
 		},
