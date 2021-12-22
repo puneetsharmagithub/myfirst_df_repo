@@ -1,5 +1,5 @@
 {
-	"name": "dataflow2",
+	"name": "dataflow",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -12,9 +12,9 @@
 					"name": "source1"
 				},
 				{
-					"dataset": {
-						"referenceName": "resurce_lookup",
-						"type": "DatasetReference"
+					"linkedService": {
+						"referenceName": "ls_ablob_source1989",
+						"type": "LinkedServiceReference"
 					},
 					"name": "source2"
 				}
@@ -23,9 +23,15 @@
 			"transformations": [
 				{
 					"name": "Join1"
+				},
+				{
+					"name": "Select1"
+				},
+				{
+					"name": "AlterRow1"
 				}
 			],
-			"script": "source(output(\n\t\tfirst_name as string,\n\t\tlast_name as string,\n\t\tage as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tignoreNoFilesFound: false) ~> source1\nsource(output(\n\t\tColumn_1 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source2\nsource1, source2 join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),\n\tjoinType:'left',\n\tbroadcast: 'auto')~> Join1"
+			"script": "parameters{\n\tlookup as string (\"lookup*\")\n}\nsource(output(\n\t\tfirst_name as string,\n\t\tlast_name as string,\n\t\tage as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource(output(\n\t\t{_col0_} as short,\n\t\t{_col1_} as short,\n\t\t{_col2_} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'delimited',\n\tcontainer: 'sourcefolder',\n\tcolumnDelimiter: '|',\n\tescapeChar: '\\\\',\n\tquoteChar: '\\\"',\n\tcolumnNamesAsHeader: false,\n\twildcardPaths:[($lookup)]) ~> source2\nsource1, source2 join(age < {_col1_}\n\t&& age >= {_col0_},\n\tjoinType:'left',\n\tbroadcast: 'right')~> Join1\nJoin1 select(mapColumn(\n\t\tfirst_name,\n\t\tlast_name,\n\t\tage,\n\t\ttype = {_col2_}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 alterRow(insertIf(first_name==\"Puneet\"),\n\tupdateIf(first_name==\"Sunny\")) ~> AlterRow1"
 		}
 	}
 }
